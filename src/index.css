@@ -18,6 +18,7 @@
 .counters-container {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
 }
 
@@ -29,7 +30,7 @@
     justify-content: center;
     flex-direction: column;
     gap: 2rem;
-    padding: 2rem;
+    padding: 1.5rem 2rem;
     border: 2px solid #46cce4;
     border-radius: 8px;
     font-size: 50px;
@@ -51,7 +52,7 @@
     width: 90%;
     height: 70px;
     padding: 2rem;
-    border: 2px solid red;
+    border: 2px solid #46cce4;
     border-radius: 8px;
     color: red;
     font-size: 50px;
@@ -70,10 +71,8 @@
     color: #46cce4;
     font-size: 20px;
     font-weight: 700;
-}
+    position: relative;
 
-.set-counter span {
-    r: 1rem;
 }
 
 .controls-wrapper {
@@ -100,4 +99,24 @@
 
 .buttonOff {
     opacity: 0.5;
+}
+
+.flex-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.inputError{
+    border: 2px solid #e13737;
+    background-color: #bd6767;
+}
+
+.error {
+    position: absolute;
+    top: -2px;
+    right: 25%;
+    font-size: 16px;
+    color: #e13737;
+
 }

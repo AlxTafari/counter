@@ -2,60 +2,75 @@ import {useEffect, useState} from "react";
 import {CounterView} from "./CounterView.tsx";
 import {CounterConfig} from "./CounterConfig.tsx";
 
+type CounterProps = {
+    current: number;
+    startValue: number;
+    maxValue: number;
+}
 
 export const Counter = () => {
 
+    const defaultSetCounter = {current: 0, startValue: 0, maxValue: 5}
 
-    const minValue = 0
-
-    const [maxValue, setMaxValue] = useState<number>(() => {
-        const maxVal = localStorage.getItem("maxValue")
-        return maxVal ? JSON.parse(maxVal) : minValue;
-    });
-    const [counter, setCounter] = useState(() => {
-        const count = localStorage.getItem("counter")
-        return count ? JSON.parse(count) : minValue;
-    });
-
-    useEffect(() => {
-        localStorage.setItem("counter", JSON.stringify(counter));
-    })
-    useEffect(() => {
-        localStorage.setItem("maxValue", JSON.stringify(maxValue));
+    const [counterX, setCounterX] = useState<CounterProps>(() => {
+        const data = localStorage.getItem("counterX")
+        return data ? JSON.parse(data)
+       : defaultSetCounter
     })
 
-    const disabled = counter === maxValue
+    useEffect(() => {
+        localStorage.setItem("counterX", JSON.stringify(counterX))
+    }, );
+
+    const disabled = counterX.current >= counterX.maxValue || counterX.maxValue < 0 || counterX.startValue < 0 || counterX.startValue >= counterX.maxValue;
 
     const onChangeStartValueHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-
-        setCounter(Number(e.currentTarget.value));
-        console.log(Number(e.currentTarget.value))
+        const newState = Number(e.currentTarget.value)
+        setCounterX({...counterX, startValue: newState, current: newState});
+        console.log(counterX.current, counterX.startValue)
     }
-
     const onChangeMaxValueHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setMaxValue(Number(e.currentTarget.value));
-        console.log(Number(e.currentTarget.value))
+        const newState = Number(e.currentTarget.value)
+        setCounterX({...counterX, maxValue: newState});
     }
 
-    const [set, setSet] = useState<boolean>(true)
-    const setHandler = () => setSet(prevState => !prevState)
+    const [mode, setMode] = useState<'view' | 'settings'>('view');
+    const modeHandler = () => {
+        setMode(prevState => prevState === 'view' ? 'settings' : 'view');
+        if (mode) {
+            resetHandler()
+        }
+    }
+
+    const incrementHandler = () => {
+        const newState = counterX.current + 1
+        setCounterX({...counterX, current: newState})
+    }
+
+    const resetHandler = () => {
+        const newState = counterX.current = counterX.startValue
+        setCounterX({...counterX, current: newState})
+
+    }
+
+
 
     return (
+
         <div className={"counter-wrapper"}>
-            {set
-                ? <CounterView counter={counter}
-                               setCounter={setCounter}
+            {mode === 'view'
+                ? <CounterView counter={counterX.current}
+                               increment={incrementHandler}
+                               reset={resetHandler}
                                disabled={disabled}
-                               callback={setHandler}  />
-                : <CounterConfig startValue={counter}
-                                 maxValue={maxValue}
+                               callback={modeHandler}  />
+                : <CounterConfig startValue={counterX.startValue}
+                                 maxValue={counterX.maxValue}
                                  setStartValue={onChangeStartValueHandler}
                                  setMaxValue={onChangeMaxValueHandler}
-                                 callback={setHandler} />
+                                 callback={modeHandler}
+                                 disabled={disabled} />
             }
         </div>
-
-
     )
-
 };

@@ -4,7 +4,10 @@ import {Counter} from "./components/counter/Counter.tsx";
 function App() {
 
     return (
-        <Counter />
+        <>
+            <Counter />
+        </>
+
     )
 }
 

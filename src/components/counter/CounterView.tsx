@@ -6,13 +6,11 @@ type Props = {
     counter: number
     callback: () => void
     disabled: boolean
-    setCounter: (value: number) => void
+    increment: () => void
+    reset: () => void
 };
 
-export const CounterView = ({counter, callback, disabled, setCounter}: Props) => {
-
-    const increment = () => setCounter(counter + 1);
-    const reset = () => setCounter(0);
+export const CounterView = ({counter, callback, disabled, increment, reset}: Props) => {
 
     return (
         <>
@@ -21,7 +19,7 @@ export const CounterView = ({counter, callback, disabled, setCounter}: Props) =>
             </DisplayCounter>
 
             <CounterControls>
-                <Button className={disabled ? "buttonOff" : "buttonOn"} onClick={increment}
+                <Button className={disabled ? "buttonOff" : ""} onClick={increment}
                         disabled={disabled} title={"Inc"}/>
                 <Button onClick={reset} title={"Reset"}/>
                 <Button onClick={callback} title={"Set"}/>

@@ -9,29 +9,29 @@ type Props = {
     startValue: number
     setMaxValue?: (e: React.ChangeEvent<HTMLInputElement>) => void
     setStartValue?: (e: React.ChangeEvent<HTMLInputElement>) => void
+    disabled: boolean
 
 };
-export const CounterConfig = ({callback, setMaxValue, setStartValue,startValue, maxValue}: Props) => {
-
-    // const [value, setValue] = useState<number>(0);
-
+export const CounterConfig = ({callback, setMaxValue, setStartValue, startValue, maxValue, disabled}: Props) => {
+    const isDisabled= disabled
     return (
         <>
             <DisplayCounter className={"set-counter"}>
-
-                <LabeledInput value={maxValue}
+                {isDisabled ? <span className={"error"}>недопустимое значение</span> : null}
+                <LabeledInput className={isDisabled ? "inputError" : ""}
+                              value={maxValue}
                               label={"max value"}
                               type={"number"} onChange={setMaxValue}/>
-
                 <LabeledInput
-                value={startValue}
-                            label={"start value"}
-                              type={"number"}
-                              onChange={setStartValue}/>
+                    className={isDisabled ? "inputError" : ""}
+                    value={startValue}
+                    label={"start value"}
+                    type={"number"}
+                    onChange={setStartValue}/>
             </DisplayCounter>
 
             <CounterControls>
-                <Button onClick={callback} title={"Set"} />
+                <Button className={isDisabled ? "buttonOff" : "buttonOn"} disabled={isDisabled} onClick={callback} title={"Set"}/>
             </CounterControls>
         </>
     );

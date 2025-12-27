@@ -6,7 +6,6 @@ type Props = {
 };
 export const Button = ({title, onClick, className, disabled }: Props) => {
 
-
     return (
         <button disabled={disabled} className={className} onClick={onClick}>{title}</button>
     );

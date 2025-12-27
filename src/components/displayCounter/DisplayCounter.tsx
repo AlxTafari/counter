@@ -3,6 +3,7 @@ type Props = {
     className?: string
 };
 export const DisplayCounter = ({children, className }: Props) => {
+
     return (
         <div className={className}>
             {children}

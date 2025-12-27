@@ -3,13 +3,15 @@ type Props = {
     type?: "text" | "number" | "password" | "email" | "checkbox";
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
     value?: number
+    className?: string
 };
-export const LabeledInput = ({label, type, onChange, value}: Props) => {
+export const LabeledInput = ({label, type, onChange, value, className}: Props) => {
 
     return (
-        <label>
-            {label}
-            <input value={value} type={type} onChange={onChange}/>
-        </label>
+        <div className={"flex-wrapper"}>
+            <label>{label}</label>
+            <input className={className} value={value} type={type} onChange={onChange}/>
+        </div>
+
     );
 };
