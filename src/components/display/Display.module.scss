@@ -1,0 +1,18 @@
+@use "./../../styles/variable" as *;
+
+.display {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border: $border;
+  border-radius: $borderRadius;
+  position: relative;
+}
+
+.displayStop {
+  @extend .display;
+  color: red;
+}

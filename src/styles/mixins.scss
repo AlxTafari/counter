@@ -1,0 +1,28 @@
+@mixin flex-wrapper(
+  $direction: row,
+  $wrap: wrap,
+  $justify: flex-start,
+  $align: stretch,
+  $gap: 10px,
+  $gap-row: null,
+  $gap-col: null
+) {
+  display: flex;
+  flex-direction: $direction;
+  flex-wrap: $wrap;
+  justify-content: $justify;
+  align-items: $align;
+
+  $row-gap: $gap;
+  $col-gap: $gap;
+
+  @if $gap-row {
+    $row-gap: $gap-row;
+  }
+
+  @if $gap-col {
+    $col-gap: $gap-col;
+  }
+  gap: $row-gap $col-gap;
+
+}

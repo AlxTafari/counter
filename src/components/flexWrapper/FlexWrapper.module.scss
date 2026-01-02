@@ -1,0 +1,6 @@
+@use "../../styles/mixins" as *;
+
+.container {
+  @include flex-wrapper(row, nowrap, space-around, center );
+  width: 100%;
+}

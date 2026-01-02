@@ -1,0 +1,16 @@
+@use "../../styles/variable.scss" as *;
+
+.counterWrapper {
+  width: 350px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1.5rem 2rem;
+  border: 2px solid #46cce4;
+  border-radius: 8px;
+  font-size: 50px;
+  font-weight: 700;
+}

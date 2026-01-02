@@ -1,0 +1,17 @@
+@use "./../../styles/variable" as *;
+
+.button-base {
+  padding: 0 1rem;
+  border: 2px solid $mainColor;
+  border-radius: 8px;
+  background-color: $mainColor;
+  color: #242424;
+  font-size: 30px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.disabled-button {
+  @extend .button-base;
+  opacity: 0.5;
+}
