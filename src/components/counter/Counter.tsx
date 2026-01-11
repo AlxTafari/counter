@@ -25,11 +25,9 @@ export const Counter = () => {
         return data ? JSON.parse(data)
             : defaultSetCounter
     })
-
     useEffect(() => {
         localStorage.setItem("counter", JSON.stringify(counter))
     },);
-
     // Проверка включить или выключить кнопку
     const disabledInc = counter.currentValue === counter.maxValue
     const disabledSet = counter.maxValueSet && counter.startValueSet < 0 || counter.startValueSet >= counter.maxValueSet;
@@ -43,7 +41,6 @@ export const Counter = () => {
         const newState = Number(e.currentTarget.value)
         setCounter({...counter, maxValueSet: newState});
     }
-
     // Кнопки управления счетчиком
     const incrementHandler = () => {
         const newState = counter.currentValue + 1
@@ -79,7 +76,7 @@ export const Counter = () => {
                        reset={resetHandler}
                        isDisabled={disabledInc}
                        callback={modeHandler}
-                       mobileView={true}/>
+                       mobileView/>
         : <CounterConfig startValue={counter.startValueSet}
                          maxValue={counter.maxValueSet}
                          setStartValue={onChangeStartValueHandler}
@@ -87,7 +84,7 @@ export const Counter = () => {
                          setCounter={modeHandler}
                          cancel={cancelHandler}
                          disabled={disabledSet}
-                         mobileView={true}/>
+                         mobileView/>
 
     const desktopCounter =
         <FlexWrapper>
@@ -112,8 +109,10 @@ export const Counter = () => {
     return (
 
         <div className={s.counter}>
-            <Button title={mobile ? "Desktop Version" : "Mobile Version"} onClick={()=>setMobile(!mobile)} />
+            <h1>{mobile ? "Mobile Version" : "Desktop Version"}</h1>
             {mobile ? mobileCounter : desktopCounter}
+            <Button title={mobile ? "Go to Desktop" : "Go to Mobile"} onClick={()=>setMobile(!mobile)} />
+
         </div>
     )
 };
