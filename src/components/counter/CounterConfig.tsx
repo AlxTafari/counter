@@ -29,7 +29,7 @@ export const CounterConfig = ({
 
     const isDisabled = disabled
     return (
-        <AppContainer>
+        <AppContainer >
             <Display>
                 {isDisabled ? <span className={"error"}>недопустимое значение</span> : null}
 
