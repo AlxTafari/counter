@@ -18,7 +18,13 @@ type CounterProps = {
 
 export const Counter = () => {
 
-    const defaultSetCounter = {currentValue: 0, startValue: 0, maxValue: 5, startValueSet: 0, maxValueSet: 0}
+    const defaultSetCounter = {
+        currentValue: 0,
+        startValue: 0,
+        maxValue: 5,
+        startValueSet: 0,
+        maxValueSet: 5
+    }
 
     const [counter, setCounter] = useState<CounterProps>(() => {
         const data = localStorage.getItem("counter")
@@ -27,58 +33,73 @@ export const Counter = () => {
     })
     useEffect(() => {
         localStorage.setItem("counter", JSON.stringify(counter))
-    },);
-    // Проверка включить или выключить кнопку
-    const disabledInc = counter.currentValue === counter.maxValue
-    const disabledSet = counter.maxValueSet && counter.startValueSet < 0 || counter.startValueSet >= counter.maxValueSet;
+    }, [counter]);
 
-    // Настройка максимального и стартового значения
+    // контроль инпутов
+    const [inputValue, setInputValue] = useState(() => {
+        return {inputStart: counter.startValue, inputMax: counter.maxValue}
+    });
+
     const onChangeStartValueHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newState = Number(e.currentTarget.value)
-        setCounter({...counter, startValueSet: newState});
+        const newValue = Number(e.currentTarget.value)
+        setInputValue({...inputValue, inputStart: newValue});
     }
     const onChangeMaxValueHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newState = Number(e.currentTarget.value)
-        setCounter({...counter, maxValueSet: newState});
+        const newValue = Number(e.currentTarget.value)
+        setInputValue({...inputValue, inputMax: newValue});
     }
+
+    // Проверка включить или выключить кнопки
+    const disabledInc = counter.currentValue === counter.maxValue
+    const disabledSet = inputValue.inputMax && inputValue.inputStart < 0 || inputValue.inputStart >= inputValue.inputMax;
+    const disabledReset = counter.startValue === counter.currentValue;
+
     // Кнопки управления счетчиком
     const incrementHandler = () => {
-        const newState = counter.currentValue + 1
-        setCounter({...counter, currentValue: newState})
+        setCounter(prev => ({...counter, currentValue: prev.currentValue + 1}));
     }
     const resetHandler = () => {
-        const newState = counter.currentValue = counter.startValue
-        setCounter({...counter, startValue: newState})
+        setCounter(prev => ({...prev, currentValue: prev.startValue}));
     }
 
     // Кнопка для установки новых значений счетчика + кнопка отмены(для мобильной версии)
-    const [mode, setMode] = useState<'view' | 'settings'>('view');
+    const [mode, setMode] = useState<'view' | 'settings'>("view");
     const modeHandler = () => {
         setMode(prevState => prevState === 'view' ? 'settings' : 'view');
         if (mode === 'settings' || !mobile) {
             setCounter({
                 ...counter,
-                currentValue: counter.startValueSet,
-                startValue: counter.startValueSet,
-                maxValue: counter.maxValueSet
+                currentValue: inputValue.inputStart,
+                startValue: inputValue.inputStart,
+                maxValue: inputValue.inputMax
             });
         }
     }
     const cancelHandler = () => {
         setMode('view');
         setCounter({...counter, startValueSet: counter.startValue, maxValueSet: counter.maxValue});
-    }
+        setInputValue({...inputValue, inputStart: counter.startValue, inputMax: counter.maxValue});
 
-    const [mobile, setMobile] = useState(false)
+    }
+    // Мобильное или Десктопное представление
+    const [mobile, setMobile] = useState(() => {
+        const data = localStorage.getItem("mobile")
+        return data ? JSON.parse(data) : false
+    })
+    useEffect(() => {
+        localStorage.setItem("mobile", JSON.stringify(mobile))
+    }, [mobile]);
     const mobileCounter = mode === 'view'
-        ? <CounterView counter={counter.currentValue}
+        ? <CounterView setError={disabledSet}
+                       counter={counter.currentValue}
                        increment={incrementHandler}
                        reset={resetHandler}
                        isDisabled={disabledInc}
+                       isResetDisabled={disabledReset}
                        callback={modeHandler}
                        mobileView/>
-        : <CounterConfig startValue={counter.startValueSet}
-                         maxValue={counter.maxValueSet}
+        : <CounterConfig startValue={inputValue.inputStart}
+                         maxValue={inputValue.inputMax}
                          setStartValue={onChangeStartValueHandler}
                          setMaxValue={onChangeMaxValueHandler}
                          setCounter={modeHandler}
@@ -88,15 +109,17 @@ export const Counter = () => {
 
     const desktopCounter =
         <FlexWrapper>
-            <CounterView counter={counter.currentValue}
+            <CounterView setError={disabledSet}
+                         counter={counter.currentValue}
                          increment={incrementHandler}
                          reset={resetHandler}
                          isDisabled={disabledInc}
+                         isResetDisabled={disabledReset}
                          callback={modeHandler}
                          mobileView={false}/>
 
-            <CounterConfig startValue={counter.startValueSet}
-                           maxValue={counter.maxValueSet}
+            <CounterConfig startValue={inputValue.inputStart}
+                           maxValue={inputValue.inputMax}
                            setStartValue={onChangeStartValueHandler}
                            setMaxValue={onChangeMaxValueHandler}
                            setCounter={modeHandler}
@@ -105,13 +128,12 @@ export const Counter = () => {
                            mobileView={false}/>
         </FlexWrapper>
 
-
     return (
 
         <div className={s.counter}>
             <h1>{mobile ? "Mobile Version" : "Desktop Version"}</h1>
             {mobile ? mobileCounter : desktopCounter}
-            <Button title={mobile ? "Go to Desktop" : "Go to Mobile"} onClick={()=>setMobile(!mobile)} />
+            <Button title={mobile ? "Go to Desktop" : "Go to Mobile"} onClick={() => setMobile(!mobile)}/>
 
         </div>
     )

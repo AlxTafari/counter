@@ -11,7 +11,9 @@
   cursor: pointer;
 }
 
+
 .disabled-button {
   @extend .button-base;
   opacity: 0.5;
+  cursor: not-allowed;
 }

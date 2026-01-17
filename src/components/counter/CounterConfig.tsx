@@ -29,9 +29,9 @@ export const CounterConfig = ({
 
     const isDisabled = disabled
     return (
-        <AppContainer >
+        <AppContainer>
             <Display>
-                {isDisabled ? <span className={"error"}>недопустимое значение</span> : null}
+                {mobileView && isDisabled ? <span className={"error"}>недопустимое значение</span> : null}
 
                 <LabeledInput
                     className={isDisabled ? "inputError" : ""}

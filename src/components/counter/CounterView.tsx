@@ -11,20 +11,29 @@ type Props = {
     increment: () => void
     reset: () => void
     mobileView: boolean
+    isResetDisabled: boolean
+    setError: boolean
 };
 
-export const CounterView = ({counter, callback, isDisabled, increment, reset, mobileView}: Props) => {
+export const CounterView = ({counter,
+                                callback,
+                                isDisabled,
+                                increment,
+                                reset,
+                                isResetDisabled,
+                                setError,
+                                mobileView}: Props) => {
 
     return (
         <AppContainer>
             <Display isDisabled={isDisabled}>
-                {counter}
+                {!mobileView && setError ? <span className={"errorDesk"}>недопустимое значение</span> : counter}
             </Display>
 
             <ControlsBar>
-                <Button className={isDisabled ? "disabled-button" : ""} onClick={increment}
+                <Button className={isDisabled ? "disabled-button" : "button-base"} onClick={increment}
                         disabled={isDisabled} title={"Inc"}/>
-                <Button onClick={reset} title={"Reset"}/>
+                <Button disabled={isResetDisabled} className={isResetDisabled ? "disabled-button" : ""} onClick={reset} title={"Reset"}/>
                 {mobileView ? <Button onClick={callback} title={"Set"}/> : null}
             </ControlsBar>
         </AppContainer>
