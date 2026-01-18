@@ -6,7 +6,7 @@ import {AppContainer} from "../app-container/App-Container";
 
 type Props = {
     counter: number
-    callback: () => void
+    setViewCounter: () => void
     isDisabled: boolean
     increment: () => void
     reset: () => void
@@ -16,7 +16,7 @@ type Props = {
 };
 
 export const CounterView = ({counter,
-                                callback,
+                                setViewCounter,
                                 isDisabled,
                                 increment,
                                 reset,
@@ -34,7 +34,7 @@ export const CounterView = ({counter,
                 <Button className={isDisabled ? "disabled-button" : "button-base"} onClick={increment}
                         disabled={isDisabled} title={"Inc"}/>
                 <Button disabled={isResetDisabled} className={isResetDisabled ? "disabled-button" : ""} onClick={reset} title={"Reset"}/>
-                {mobileView ? <Button onClick={callback} title={"Set"}/> : null}
+                {mobileView ? <Button onClick={setViewCounter} title={"Set"}/> : null}
             </ControlsBar>
         </AppContainer>
     );

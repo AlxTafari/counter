@@ -11,7 +11,7 @@ type Props = {
     setMaxValue?: (e: React.ChangeEvent<HTMLInputElement>) => void
     setStartValue?: (e: React.ChangeEvent<HTMLInputElement>) => void
     cancel: () => void
-    disabled: boolean
+    isDisabled: boolean
     mobileView: boolean
 
 };
@@ -22,16 +22,14 @@ export const CounterConfig = ({
                                   startValue,
                                   maxValue,
                                   cancel,
-                                  disabled,
+                                  isDisabled,
                                   mobileView,
                               }: Props) => {
 
-
-    const isDisabled = disabled
     return (
         <AppContainer>
             <Display>
-                {mobileView && isDisabled ? <span className={"error"}>недопустимое значение</span> : null}
+                {!mobileView && isDisabled ? <span className={"error"}>недопустимое значение</span> : null}
 
                 <LabeledInput
                     className={isDisabled ? "inputError" : ""}

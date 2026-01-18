@@ -9,6 +9,7 @@ type Props = {
 };
 export const LabeledInput = ({label, type, onChange, value, className}: Props) => {
 
+
     return (
         <div className={s.labeledInput}>
             <label>{label}</label>

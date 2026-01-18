@@ -39,7 +39,6 @@ export const Counter = () => {
     const [inputValue, setInputValue] = useState(() => {
         return {inputStart: counter.startValue, inputMax: counter.maxValue}
     });
-
     const onChangeStartValueHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = Number(e.currentTarget.value)
         setInputValue({...inputValue, inputStart: newValue});
@@ -64,22 +63,33 @@ export const Counter = () => {
 
     // Кнопка для установки новых значений счетчика + кнопка отмены(для мобильной версии)
     const [mode, setMode] = useState<'view' | 'settings'>("view");
+
     const modeHandler = () => {
-        setMode(prevState => prevState === 'view' ? 'settings' : 'view');
-        if (mode === 'settings' || !mobile) {
-            setCounter({
-                ...counter,
-                currentValue: inputValue.inputStart,
-                startValue: inputValue.inputStart,
-                maxValue: inputValue.inputMax
-            });
+        setMode("settings")
+    }
+
+    // const normalizeNumber = (value: string): number => {
+    //     const trimmed = value.replace(/^0+(?!$)/, "");
+    //     return Number(trimmed);
+    // };
+
+    const setCounterHandler = () => {
+        setCounter({
+            ...counter,
+            currentValue: inputValue.inputStart,
+            startValue: inputValue.inputStart,
+            maxValue: inputValue.inputMax
+        });
+        setInputValue({...inputValue, inputStart: counter.startValue, inputMax: counter.maxValue});
+        if (mobile) {
+            setMode("view");
         }
     }
+
     const cancelHandler = () => {
         setMode('view');
         setCounter({...counter, startValueSet: counter.startValue, maxValueSet: counter.maxValue});
         setInputValue({...inputValue, inputStart: counter.startValue, inputMax: counter.maxValue});
-
     }
     // Мобильное или Десктопное представление
     const [mobile, setMobile] = useState(() => {
@@ -96,15 +106,15 @@ export const Counter = () => {
                        reset={resetHandler}
                        isDisabled={disabledInc}
                        isResetDisabled={disabledReset}
-                       callback={modeHandler}
+                       setViewCounter={modeHandler}
                        mobileView/>
         : <CounterConfig startValue={inputValue.inputStart}
                          maxValue={inputValue.inputMax}
+                         setCounter={setCounterHandler}
                          setStartValue={onChangeStartValueHandler}
                          setMaxValue={onChangeMaxValueHandler}
-                         setCounter={modeHandler}
                          cancel={cancelHandler}
-                         disabled={disabledSet}
+                         isDisabled={disabledSet}
                          mobileView/>
 
     const desktopCounter =
@@ -115,16 +125,16 @@ export const Counter = () => {
                          reset={resetHandler}
                          isDisabled={disabledInc}
                          isResetDisabled={disabledReset}
-                         callback={modeHandler}
+                         setViewCounter={modeHandler}
                          mobileView={false}/>
 
             <CounterConfig startValue={inputValue.inputStart}
                            maxValue={inputValue.inputMax}
+                           setCounter={setCounterHandler}
                            setStartValue={onChangeStartValueHandler}
                            setMaxValue={onChangeMaxValueHandler}
-                           setCounter={modeHandler}
                            cancel={cancelHandler}
-                           disabled={disabledSet}
+                           isDisabled={disabledSet}
                            mobileView={false}/>
         </FlexWrapper>
 
