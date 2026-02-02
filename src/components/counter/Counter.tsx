@@ -4,6 +4,9 @@ import {CounterConfig} from "./CounterConfig";
 import {FlexWrapper} from "../flexWrapper/FlexWrapper";
 import {Button} from "../button/Button";
 import s from "./Counter.module.scss"
+import {useDispatch, useSelector} from "react-redux";
+import {RootState} from "../../app/store";
+import {cancelSetCounterAC, incrementCounterAC, resetCounterAC, setCounterAC} from "../../model/counter-reducer";
 
 
 type CounterProps = {
@@ -13,31 +16,25 @@ type CounterProps = {
 
     startValueSet: number; // настройка startValue
     maxValueSet: number; // настройка maxValue
-
 }
+
 
 export const Counter = () => {
 
-    const defaultSetCounter = {
-        currentValue: 0,
-        startValue: 0,
-        maxValue: 5,
-        startValueSet: 0,
-        maxValueSet: 5
-    }
+    // const [counter, setCounter] = useState<CounterProps>(() => {
+    //     const data = localStorage.getItem("counter")
+    //     return data ? JSON.parse(data)
+    //         : {}
+    // })
+    // useEffect(() => {
+    //     localStorage.setItem("counter", JSON.stringify(counter))
+    // }, [counter]);
 
-    const [counter, setCounter] = useState<CounterProps>(() => {
-        const data = localStorage.getItem("counter")
-        return data ? JSON.parse(data)
-            : defaultSetCounter
-    })
-    useEffect(() => {
-        localStorage.setItem("counter", JSON.stringify(counter))
-    }, [counter]);
-
+    const counter1 = useSelector((state: RootState) => state.counter);
+    const dispatch = useDispatch();
     // контроль инпутов
     const [inputValue, setInputValue] = useState(() => {
-        return {inputStart: counter.startValue, inputMax: counter.maxValue}
+        return {inputStart: counter1.startValue, inputMax: counter1.maxValue}
     });
     const onChangeStartValueHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = Number(e.currentTarget.value)
@@ -47,18 +44,17 @@ export const Counter = () => {
         const newValue = Number(e.currentTarget.value)
         setInputValue({...inputValue, inputMax: newValue});
     }
-
     // Проверка включить или выключить кнопки
-    const disabledInc = counter.currentValue === counter.maxValue
+    const disabledInc = counter1.currentValue === counter1.maxValue
     const disabledSet = inputValue.inputMax && inputValue.inputStart < 0 || inputValue.inputStart >= inputValue.inputMax;
-    const disabledReset = counter.startValue === counter.currentValue;
+    const disabledReset = counter1.startValue === counter1.currentValue;
 
     // Кнопки управления счетчиком
     const incrementHandler = () => {
-        setCounter(prev => ({...counter, currentValue: prev.currentValue + 1}));
+        dispatch(incrementCounterAC());
     }
     const resetHandler = () => {
-        setCounter(prev => ({...prev, currentValue: prev.startValue}));
+        dispatch(resetCounterAC());
     }
 
     // Кнопка для установки новых значений счетчика + кнопка отмены(для мобильной версии)
@@ -74,13 +70,9 @@ export const Counter = () => {
     // };
 
     const setCounterHandler = () => {
-        setCounter({
-            ...counter,
-            currentValue: inputValue.inputStart,
-            startValue: inputValue.inputStart,
-            maxValue: inputValue.inputMax
-        });
-        setInputValue({...inputValue, inputStart: counter.startValue, inputMax: counter.maxValue});
+        dispatch(setCounterAC({startValue: inputValue.inputStart, maxValue: inputValue.inputMax}));
+
+        setInputValue({...inputValue, inputStart: counter1.startValue, inputMax: counter1.maxValue});
         if (mobile) {
             setMode("view");
         }
@@ -88,8 +80,8 @@ export const Counter = () => {
 
     const cancelHandler = () => {
         setMode('view');
-        setCounter({...counter, startValueSet: counter.startValue, maxValueSet: counter.maxValue});
-        setInputValue({...inputValue, inputStart: counter.startValue, inputMax: counter.maxValue});
+        dispatch(cancelSetCounterAC());
+        setInputValue({...inputValue, inputStart: counter1.startValue, inputMax: counter1.maxValue});
     }
     // Мобильное или Десктопное представление
     const [mobile, setMobile] = useState(() => {
@@ -101,7 +93,7 @@ export const Counter = () => {
     }, [mobile]);
     const mobileCounter = mode === 'view'
         ? <CounterView setError={disabledSet}
-                       counter={counter.currentValue}
+                       counter={counter1.currentValue}
                        increment={incrementHandler}
                        reset={resetHandler}
                        isDisabled={disabledInc}
@@ -120,7 +112,7 @@ export const Counter = () => {
     const desktopCounter =
         <FlexWrapper>
             <CounterView setError={disabledSet}
-                         counter={counter.currentValue}
+                         counter={counter1.currentValue}
                          increment={incrementHandler}
                          reset={resetHandler}
                          isDisabled={disabledInc}
